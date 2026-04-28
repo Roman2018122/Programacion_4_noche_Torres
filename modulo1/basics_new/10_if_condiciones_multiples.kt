@@ -4,7 +4,7 @@ fun main () {
     val sistolica = readLine()?.toIntOrNull()?:0
     val clasificacion = if(sistolica <90) 
     "Hipotension"
-    } else if (sistolica <= 119){
+    else if (sistolica <= 119){
         "Normal"
     } else if(sistolica <=139) {
         "elevada"
