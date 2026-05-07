@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
                 // ◀ CAMBIA AQUÍ para probar cada sección:
                 // S01SaludoScreen()
                 // S02TextScreen()
-                 S03ButtonScreen()
+                // S03ButtonScreen()
                 // S04_LayoutScreen()
                 // S05_ModifierScreen()
                 // S06_EstadoScreen()
