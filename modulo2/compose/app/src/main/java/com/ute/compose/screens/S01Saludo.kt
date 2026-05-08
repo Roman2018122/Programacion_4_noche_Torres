@@ -1,7 +1,6 @@
 package com.ute.compose.screens
 
 
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -18,7 +17,9 @@ fun Saludo(nombre: String) {
 @Composable
 fun S01SaludoScreen() {
     Column(
-        modifier            = Modifier.fillMaxSize().padding(24.dp),
+        modifier            = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -27,11 +28,19 @@ fun S01SaludoScreen() {
         HorizontalDivider()
 
         // El mismo composable, distintos argumentos
+
         Saludo("Ana") // <- Etiquetas
         Saludo("Luis")
         Saludo("Kotlin")
 
         HorizontalDivider() // <--- Ese es un componente
+
+        Saludo("Ana")
+        Saludo("Luis")
+        Saludo("Kotlin")
+
+        HorizontalDivider()
+
 
         MensajeCondicional(mostrar = true)
         MensajeCondicional(mostrar = false)

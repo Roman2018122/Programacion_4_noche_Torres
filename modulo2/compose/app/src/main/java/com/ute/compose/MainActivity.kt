@@ -6,6 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
 import com.ute.compose.screens.*
+import com.ute.compose.ui.theme.viewmodel.Paso01ViewModelScreen
+import com.ute.compose.material.*
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,6 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 // ◀ CAMBIA AQUÍ para probar cada sección:
+
                 // S01SaludoScreen()
                 // S02TextScreen()
                 // S03ButtonScreen()
@@ -21,6 +25,34 @@ class MainActivity : ComponentActivity() {
                 // S06_EstadoScreen()
                 // S07_StateHoistingScreen()
                 //S08_BienvenidaScreen()
+
+                //S01SaludoScreen()
+                //S02TextScreen()
+                //S03ButtonScreen()
+                //S04LayoutScreen()
+                //S05ModifierScreen()
+                //S06EstadoScreen()
+                //S07StateHoistingScreen()
+                //S08BienvenidaScreen()
+
+                //Componentes Material 3: TextField, Card, LazyColumn, Scaffold y diálogos
+                // ◀ CAMBIA AQUÍ para probar cada paso:
+                // Paso01_TextFieldScreen()
+                //Paso02CardScreen()
+                //Paso03LazyColumnScreen()
+                //Paso04ScaffoldScreen()
+                //Paso05NavBarScreen()
+                //Paso06DialogosScreen()   // ← paso activo
+
+                //  MaterialTheme {
+                // ◀ CAMBIA AQUÍ para probar cada paso:
+                // Paso01ViewModelScreen()
+                // Paso02_UiStateScreen()
+                // Paso03_NavigationScreen()
+                // Paso04_DetalleScreen()  ← solo para preview, la nav lo llama
+                // Paso05_RetrofitScreen()
+                //Paso06_CompletoScreen()   // ← paso activo
+
             }
         }
     }

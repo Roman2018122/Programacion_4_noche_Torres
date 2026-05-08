@@ -54,7 +54,11 @@ fun S02TextScreen() {
         )
 
         EtiquetaSeccion("5. Escala tipográfica Material 3")
+
         Text("headlineMedium", style = MaterialTheme.typography.headlineSmall)
+
+        Text("headlineMedium", style = MaterialTheme.typography.headlineMedium)
+
         Text("titleLarge",     style = MaterialTheme.typography.titleLarge)
         Text("bodyLarge",      style = MaterialTheme.typography.bodyLarge)
         Text("bodySmall",      style = MaterialTheme.typography.bodySmall)
@@ -87,6 +91,10 @@ internal fun EtiquetaSeccion(texto: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun S02_Preview() {
+
+//fun S02_Preview() {
+
+fun S02Preview() {
+
     MaterialTheme { S02TextScreen() }
 }

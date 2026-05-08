@@ -1,7 +1,5 @@
 package com.ute.compose.screens
 
-
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -105,6 +103,10 @@ fun S03ButtonScreen() {
 
 @Preview(showBackground = true)
 @Composable
+
 fun S03_Preview() {
+
+fun S03Preview() {
+
     MaterialTheme { S03ButtonScreen() }
 }

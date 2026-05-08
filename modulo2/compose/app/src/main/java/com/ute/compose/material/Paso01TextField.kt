@@ -1,5 +1,5 @@
 // ui/Paso01_TextField.kt
-package com.tuapp.contactos.ui
+package com.ute.compose.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
