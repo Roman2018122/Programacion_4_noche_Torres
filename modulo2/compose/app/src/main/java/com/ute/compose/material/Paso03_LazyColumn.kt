@@ -1,5 +1,4 @@
-// ui/Paso03_LazyColumn.kt
-package com.tuapp.contactos.ui
+package com.ute.compose.material
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

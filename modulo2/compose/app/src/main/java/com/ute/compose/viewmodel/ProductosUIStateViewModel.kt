@@ -1,5 +1,4 @@
-// viewmodel/ProductosViewModel.kt  (versión Paso 2)
-package com.tuapp.catalogo.viewmodel
+package com.ute.compose.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +17,7 @@ sealed class UiState<out T> {
     data class Error(val message: String) : UiState<Nothing>()
 }
 
-class ProductosViewModel : ViewModel() {
+class ProductosUiStateViewModel : ViewModel() {
 
     // Un solo StateFlow con todos los estados posibles
     private val _uiState = MutableStateFlow<UiState<List<Producto>>>(UiState.Loading)

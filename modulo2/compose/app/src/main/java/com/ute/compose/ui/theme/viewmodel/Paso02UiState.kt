@@ -1,7 +1,4 @@
-package com.ute.compose.ui.viewmodel
-
-// ui/Paso02_UiState.kt
-package com.ute.compose.ui
+package com.ute.compose.ui.theme.viewmodel
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,11 +13,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ute.compose.viewmodel.ProductosViewModel
+import com.ute.compose.viewmodel.ProductosUiStateViewModel
 import com.ute.compose.viewmodel.UiState
 
 @Composable
-fun Paso02_UiStateScreen(vm: ProductosViewModel = viewModel()) {
+fun Paso02_UiStateScreen(vm: ProductosUiStateViewModel = viewModel()) {
     val uiState  by vm.uiState.collectAsStateWithLifecycle()
     val busqueda by vm.busqueda.collectAsStateWithLifecycle()
 
@@ -104,8 +101,6 @@ fun Paso02_UiStateScreen(vm: ProductosViewModel = viewModel()) {
                             Modifier.size(56.dp),
                             tint = MaterialTheme.colorScheme.error)
                         Text(
-                            // estado.message está disponible porque el compilador
-                            // sabe que 'estado' es UiState.Error aquí
                             text  = estado.message,
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.error
@@ -121,7 +116,6 @@ fun Paso02_UiStateScreen(vm: ProductosViewModel = viewModel()) {
 
             // ── Success ────────────────────────────────────────────────────
             is UiState.Success -> {
-                // estado.data está disponible aquí como List<Producto>
                 Text(
                     "${estado.data.size} producto(s)",
                     style    = MaterialTheme.typography.labelSmall,
@@ -141,8 +135,40 @@ fun Paso02_UiStateScreen(vm: ProductosViewModel = viewModel()) {
     }
 }
 
+@Composable
+fun TarjetaProductoSimple(producto: com.ute.compose.model.Producto) {
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier          = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text  = producto.nombre,
+                    style = MaterialTheme.typography.titleSmall
+                )
+                Text(
+                    text  = "${producto.precio} $",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            Badge(
+                containerColor = if (producto.stock > 0)
+                    MaterialTheme.colorScheme.primaryContainer
+                else
+                    MaterialTheme.colorScheme.errorContainer
+            ) {
+                Text("Stock: ${producto.stock}")
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-fun Paso02_Preview() {
+fun Paso02Preview() {
     MaterialTheme { Paso02_UiStateScreen() }
 }

@@ -1,8 +1,5 @@
 package com.ute.compose.material
 
-// ui/Paso04_Scaffold.kt
-
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,9 +14,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ute.compose.model.contactosDeMuestra
-
+import com.ute.compose.model.contactosDeMuestra
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Paso04_ScaffoldScreen() {
+fun Paso04ScaffoldScreen() {
     var contactos  by remember { mutableStateOf(contactosDeMuestra) }
     var busqueda   by remember { mutableStateOf("") }
     var filtro     by remember { mutableStateOf("Todos") }
@@ -166,5 +164,5 @@ fun Paso04_ScaffoldScreen() {
 @Preview(showBackground = true)
 @Composable
 fun Paso04_Preview() {
-    MaterialTheme { Paso04_ScaffoldScreen() }
+    MaterialTheme { Paso04ScaffoldScreen() }
 }

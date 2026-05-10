@@ -1,7 +1,5 @@
 package com.ute.compose.material
 
-// ui/Paso05_NavBar.kt
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tuapp.contactos.model.Contacto
-import com.tuapp.contactos.model.contactosDeMuestra
+import com.ute.compose.model.Contacto
+import com.ute.compose.model.contactosDeMuestra
 
 // Modelo del destino de navegación
 // Separar datos de presentación es buena práctica (SRP)
@@ -28,8 +26,9 @@ data class DestinoNav(
     val iconoInactivo: ImageVector
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Paso05_NavBarScreen() {
+fun Paso05NavBarScreen() {
     var destinoActual by remember { mutableStateOf("contactos") }
     var contactos     by remember { mutableStateOf(contactosDeMuestra) }
 
@@ -128,7 +127,7 @@ private fun PantallaContactosContent(
 }
 
 @Composable
-private fun PantallaFavoritosContent(
+fun PantallaFavoritosContent(
     favoritos: List<Contacto>,
     modifier:  Modifier = Modifier
 ) {
@@ -160,7 +159,7 @@ private fun PantallaFavoritosContent(
 }
 
 @Composable
-private fun PantallaPerfilContent(modifier: Modifier = Modifier) {
+fun PantallaPerfilContent(modifier: Modifier = Modifier) {
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(Icons.Default.AccountCircle, null, Modifier.size(80.dp),
@@ -178,5 +177,5 @@ private fun PantallaPerfilContent(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun Paso05_Preview() {
-    MaterialTheme { Paso05_NavBarScreen() }
+    MaterialTheme { Paso05NavBarScreen() }
 }
