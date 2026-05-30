@@ -37,13 +37,15 @@ void main(){
     print('Atencion rapida ');
   }
 
+  
+  
   if (doctores_cantidad > 0) {
 
   promedio_pacientes_xdoc =
-        pacientes_atendidos_total / doctores_cantidad;
-
-
-    print('Total de pacientes atendidos: '
+        pacientes_atendidos_total / doctores_cantidad; 
+  
+  }
+  print('Total de pacientes atendidos: '
           '$pacientes_atendidos_total');
 
     print('Cantidad de doctores registrados: '
@@ -53,6 +55,6 @@ void main(){
           '$promedio_pacientes_xdoc');
   }
         
-  }
-
 }
+
+

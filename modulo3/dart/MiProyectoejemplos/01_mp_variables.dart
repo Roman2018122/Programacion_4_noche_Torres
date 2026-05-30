@@ -1,42 +1,63 @@
 void main() {
-  // var — tipo inferido (como val en Kotlin)
-  var nombre = 'Ana';           // String
-  var edad   = 28;              // int
-  var precio = 89.99;           // double
-  var activo = true;            // bool
 
-  // Tipo explícito
-  String apellido = 'García';
-  int    stock    = 100;
-  double pi       = 3.14159;
-  bool   visible  = false;
+  // var - tipo inferido
+  var cliente = 'Juan Perez';      // String
+  var kilometraje = 85000;         // int
+  var costoRevision = 89.99;       // double
+  var reparado = true;             // bool
 
-  // final — no se puede reasignar (como val en Kotlin)
-  final ciudad = 'Madrid';
-  // ciudad = 'Barcelona';  // ERROR — final no se puede reasignar
+  // Tipo explicito
+  String vehiculo = 'Toyota Corolla';
+  int stockAceite = 100;
+  double iva = 0.15;
+  bool disponible = true;
 
-  // const — constante en tiempo de compilación (como const en Kotlin)
-  const gravedad = 9.8;
-  const pi2      = 3.14159;
+  // final - no se puede reasignar
+  final taller = 'Taller Mecanico Torres';
 
-  // Diferencia clave: final vs const
-  final ahora  = DateTime.now();   // OK — se evalúa en runtime
-  // const ahora = DateTime.now(); // ERROR — DateTime.now() no es constante de compilación
+  // taller = 'Otro Taller'; // ERROR
 
-  print('$nombre $apellido tiene $edad años en $ciudad');
+  // const - constante de compilacion
+  const costoDiagnostico = 25.0;
+  const porcentajeDescuento = 0.10;
 
-  // var — mutable, tipo inferido
-    var contador = 0;
-    contador = 1;          // OK
+  // Diferencia entre final y const
+  final fechaIngreso = DateTime.now();
 
-    // final — inmutable referencia, evaluado en runtime
-    final lista = [1, 2, 3];
-    lista.add(4);          // OK — la referencia es final, no el contenido
-    // lista = [5, 6];     // ERROR — no se puede reasignar la referencia
+  // const fechaIngreso = DateTime.now(); // ERROR
 
-    // const — inmutable profundo, evaluado en compilación
-    const colores = ['rojo', 'azul'];
-    // colores.add('verde'); // ERROR — lista const es completamente inmutable
+  print('Cliente: $cliente');
+  print('Vehiculo: $vehiculo');
+  print('Kilometraje: $kilometraje km');
+  print('Taller: $taller');
 
-  
+  // var - mutable
+  var vehiculosAtendidos = 0;
+
+  vehiculosAtendidos = 1;
+
+  print('Vehiculos atendidos: $vehiculosAtendidos');
+
+  // final - referencia fija
+  final servicios = [
+    'Cambio de aceite',
+    'Revision de frenos',
+    'Alineacion'
+  ];
+
+  servicios.add('Cambio de bateria');
+
+  print(servicios);
+
+  // const - completamente inmutable
+  const categorias = [
+    'Lubricantes',
+    'Frenos',
+    'Llantas'
+  ];
+
+  print(categorias);
+
+  print('Fecha de ingreso: $fechaIngreso');
+  print('Costo diagnostico: \$$costoDiagnostico');
 }
