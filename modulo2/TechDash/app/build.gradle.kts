@@ -78,6 +78,7 @@ dependencies {
         // Ubicación
         implementation("com.google.android.gms:play-services-location:21.3.0")
         implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 
         // Google Maps Compose (para visualizar la ubicación)
         implementation("com.google.maps.android:maps-compose:6.2.0")
