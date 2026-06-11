@@ -1,16 +1,19 @@
 package com.ute.techdash.ui.hardware.gps
 
-
-
-// 📁 Nuevos archivos → ui/hardware/gps/LocationRepository.kt  (incluye UbicacionDato y LocationRepository)
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import android.os.Looper
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 
 data class UbicacionDato(
     val latitud:   Double,
@@ -74,8 +77,6 @@ class LocationRepository(private val context: Context) {
     // Obtener la última ubicación conocida (instantánea)
     @SuppressLint("MissingPermission")
     suspend fun ultimaUbicacionConocida(): UbicacionDato? {
-        return kotlinx.coroutines.tasks.await(
-            clienteUbicacion.lastLocation
-        )?.toUbicacionDato()
+        return clienteUbicacion.lastLocation.await()?.toUbicacionDato()
     }
 }
