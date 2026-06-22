@@ -1,9 +1,12 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'widgets/catalogo_basicos.dart';
+import 'widgets/catalogo_basico.dart';
 import 'widgets/etiqueta.dart';
 import 'widgets/servicio_estado.dart';
 import 'widgets/contador_limitado.dart';
+import 'widgets/reloj.dart';
+
+
 // ┌──────────────────────────────────────────────────────────────────┐
 // │  Cambia este número y guarda (Ctrl+S) para navegar entre pasos. │
 // │  1  Paso 1   StatelessWidget mínimo                             │
@@ -15,7 +18,7 @@ import 'widgets/contador_limitado.dart';
 // │  7  Paso 5   BuildContext                                        │
 // │  8  Paso 6   Composición de widgets                             │
 // └──────────────────────────────────────────────────────────────────┘
-const int paso = 5;
+const int paso = 6;
 
 void main() => runApp(MaterialApp(
   debugShowCheckedModeBanner: false,
@@ -63,7 +66,14 @@ void main() => runApp(MaterialApp(
         ),
       ),
     ),
-    _ => Scaffold(body: Center(child: Text('Paso $paso: crea el widget primero'))),
+    6 => Scaffold(                              // Paso 4
+      appBar: AppBar(title: const Text('Cronómetro')),
+      body: const Center(child: Reloj()),
+    ),
+    //5 => const PantallaContexto(),    // Paso 5 — ya tiene su propio Scaffold
+    //_ => Scaffold(body: Center(child: Text('Paso $paso: crea el widget primero'))),
+    // TODO: Handle this case.
+    int() => throw UnimplementedError(),
   },
 ));
 
