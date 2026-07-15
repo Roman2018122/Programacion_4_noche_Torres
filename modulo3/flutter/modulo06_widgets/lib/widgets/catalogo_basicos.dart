@@ -281,7 +281,7 @@ Row(
         value:       0.3,
         color:       Colors.red,
         strokeWidth: 3,
-        strokeCap:   StrokeCap.round,   // puntas redondeadas
+        strokeCap:   StrokeCap.round,   // puntas redondeadas                                                                                 
       )),
       
   ],

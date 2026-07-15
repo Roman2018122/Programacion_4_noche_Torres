@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        import 'package:flutter/material.dart';
 
 class PantallaContexto extends StatelessWidget {
   const PantallaContexto({super.key});
@@ -18,7 +18,7 @@ class PantallaContexto extends StatelessWidget {
       backgroundColor: colores.surface,
       appBar: AppBar(
         backgroundColor: colores.primaryContainer,
-        foregroundColor: colores.onPrimaryContainer,
+        foregroundColor: colores.onPrimaryContainer,                                                                                                                                                                                                                                                                                                                                                  
         title: Text(
           'Pantalla ${esMovil ? "móvil" : "tablet"} · ${esRetrato ? "retrato" : "paisaje"}',
           style: tema.textTheme.titleMedium,
@@ -35,6 +35,7 @@ class PantallaContexto extends StatelessWidget {
               'Alto:         ${tamanio.height.toStringAsFixed(0)} px',
               'Pixel ratio:  ${MediaQuery.devicePixelRatioOf(context).toStringAsFixed(1)}',
               'Orientación:  ${MediaQuery.orientationOf(context).name}',
+              ' Padding Top: ${MediaQuery}'
             ],
           ),
           const SizedBox(height: 16),
