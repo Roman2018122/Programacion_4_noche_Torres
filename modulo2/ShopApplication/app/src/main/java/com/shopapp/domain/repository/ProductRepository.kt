@@ -8,6 +8,10 @@ import android.net.Uri
 
 interface ProductRepository {
 
+    suspend fun getProducts(
+        filters: ProductFilters
+    ): Result<Pair<List<Product>, Int>>
+
     suspend fun uploadProductImage(id: Int, uri: Uri): Result<String>
     suspend fun getProduct(id: Int): Result<Product>
     suspend fun createProduct(payload: ProductPayload): Result<Product>

@@ -23,6 +23,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 @Singleton
 class ProductRepositoryImpl @Inject constructor(
     private val api: ProductApi,
+    @ApplicationContext private val context: Context
 ) : ProductRepository {
 
     override suspend fun getProducts(filters: ProductFilters): Result<Pair<List<Product>, Int>> =
@@ -108,4 +109,5 @@ class ProductRepositoryImpl @Inject constructor(
         val requestBody = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
         val fileName    = "upload.${mimeType.substringAfterLast('/')}"
         return MultipartBody.Part.createFormData(fieldName, fileName, requestBody)
+}
 }
