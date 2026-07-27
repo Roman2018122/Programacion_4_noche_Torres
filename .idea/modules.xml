@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Programacion_4_noche_Torres.iml" filepath="$PROJECT_DIR$/.idea/Programacion_4_noche_Torres.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modulo2/ShopApp/ShopApp.iml" filepath="$PROJECT_DIR$/modulo2/ShopApp/ShopApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modulo2/ShopApplication/app/build/tmp/build.iml" filepath="$PROJECT_DIR$/modulo2/ShopApplication/app/build/tmp/build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modulo2/ShopApplication/app/build/generated/generated.iml" filepath="$PROJECT_DIR$/modulo2/ShopApplication/app/build/generated/generated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modulo3/modulo3.iml" filepath="$PROJECT_DIR$/modulo3/modulo3.iml" />
+    </modules>
+  </component>
+</project>
