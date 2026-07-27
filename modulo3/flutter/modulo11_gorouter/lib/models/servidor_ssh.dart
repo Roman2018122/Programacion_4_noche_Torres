@@ -2,8 +2,8 @@ class ServidorSSH {
   final String id;
   final String nombre;
   final String ip;
-  final int    puerto;
-  final bool   ssl;
+  final int puerto;
+  final bool ssl;
 
   const ServidorSSH({
     required this.id,
@@ -15,7 +15,25 @@ class ServidorSSH {
 }
 
 const servidoresSimulados = [
-  ServidorSSH(id: '1', nombre: 'prod-web-01', ip: '10.0.2.10',   puerto: 22,   ssl: true),
-  ServidorSSH(id: '2', nombre: 'prod-db-01',  ip: '10.0.2.20',   puerto: 22,   ssl: true),
-  ServidorSSH(id: '3', nombre: 'staging-api', ip: '10.0.3.10',   puerto: 2222, ssl: false),
+  ServidorSSH(
+    id: '1',
+    nombre: 'prod-web-01',
+    ip: '10.0.2.10',
+    puerto: 22,
+    ssl: true,
+  ),
+  ServidorSSH(
+    id: '2',
+    nombre: 'prod-db-01',
+    ip: '10.0.2.20',
+    puerto: 22,
+    ssl: true,
+  ),
+  ServidorSSH(
+    id: '3',
+    nombre: 'staging-api',
+    ip: '10.0.3.10',
+    puerto: 2222,
+    ssl: false,
+  ),
 ];

@@ -2,9 +2,9 @@ class ServidorSSH {
   final String id;
   final String nombre;
   final String ip;
-  final int    puerto;
-  final bool   ssl;
-  bool         favorito;
+  final int puerto;
+  final bool ssl;
+  bool favorito;
 
   ServidorSSH({
     required this.id,

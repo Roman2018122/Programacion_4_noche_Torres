@@ -1,12 +1,22 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-sealed class AuthState { const AuthState(); }
-class SinSesion   extends AuthState { const SinSesion(); }
-class Cargando    extends AuthState { const Cargando(); }
+sealed class AuthState {
+  const AuthState();
+}
+
+class SinSesion extends AuthState {
+  const SinSesion();
+}
+
+class Cargando extends AuthState {
+  const Cargando();
+}
+
 class Autenticado extends AuthState {
   final String usuario;
   const Autenticado(this.usuario);
 }
+
 class ErrorAuth extends AuthState {
   final String mensaje;
   const ErrorAuth(this.mensaje);
@@ -32,5 +42,6 @@ class AuthNotifier extends Notifier<AuthState> {
   void logout() => state = const SinSesion();
 }
 
-final authProvider =
-    NotifierProvider<AuthNotifier, AuthState>(AuthNotifier.new);
+final authProvider = NotifierProvider<AuthNotifier, AuthState>(
+  AuthNotifier.new,
+);

@@ -1,10 +1,18 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'screens/pantalla_tema.dart';
-import 'screens/pantalla_appbar.dart';
-import 'widgets/catalogo_botones.dart';
-import 'screens/pantalla_navegacion.dart';
-import 'screens/pantalla_dialogs.dart';
+//import 'screens/pantalla_tema.dart';
+import 'screens/pantalla_tema_mp.dart';
+//import 'screens/pantalla_appbar.dart';
+import 'screens/pantalla_appbar_mp.dart';
+//import 'widgets/catalogo_botones.dart';
+import 'widgets/catalogo_botones_mp.dart';
+//import 'screens/pantalla_navegacion.dart';
+import 'screens/pantalla_navegacion_mp.dart';
+//import 'screens/pantalla_dialogs.dart';
+import 'screens/pantalla_dialogs_mp.dart';
+
+import 'screens/pantalla_ajustes_mp.dart';
+
 // ┌──────────────────────────────────────────────────────────────────┐
 // │  Cambia este número y guarda (Ctrl+S) para navegar entre pasos. │
 // │  1  Paso 1  ThemeData + Scaffold básico                         │
@@ -14,7 +22,7 @@ import 'screens/pantalla_dialogs.dart';
 // │  5  Paso 5  NavigationBar con 4 pestañas                        │
 // │  6  Paso 6  SnackBar y AlertDialog                              │
 // └──────────────────────────────────────────────────────────────────┘
-const int paso = 4;
+const int paso = 2;
 
 void main() => runApp(const AppMonitoreo());
 
@@ -27,35 +35,59 @@ class AppMonitoreo extends StatefulWidget {
 class _AppMonitoreoState extends State<AppMonitoreo> {
   ThemeMode _themeMode = ThemeMode.system;
 
+  Color _seedColor = const Color(0xFF1565C0);
+
+  final List<({String nombre, Color color})> _paletas = [
+    (nombre: 'Azul', color: Color(0xFF1565C0)),
+    (nombre: 'Verde', color: Color(0xFF2E7D32)),
+    (nombre: 'Naranja', color: Color(0xFFEF6C00)),
+    (nombre: 'Rojo', color: Color(0xFFC62828)),
+    (nombre: 'Morado', color: Color(0xFF6A1B9A)),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    const seedColor = Color(0xFF1565C0);
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: _themeMode,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: seedColor, brightness: Brightness.light),
+          seedColor: _seedColor,
+          brightness: Brightness.light,
+        ),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: seedColor, brightness: Brightness.dark),
+          seedColor: _seedColor,
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
       ),
       home: switch (paso) {
         1 => const _Paso1(),
-        2 => PantallaTema(
-       themeMode: _themeMode,
-       onToggle:  (mode) => setState(() => _themeMode = mode),
-     ),
-     3 => const PantallaAppBar(),
-     4 => const CatalogoBotones(),
-     5 => const PantallaNavegacion(),
-     6 => const PantallaDialogs(),
+        2 => PantallaTemaMp(
+          themeMode: _themeMode,
+          onToggle: (mode) => setState(() => _themeMode = mode),
+        ),
+        3 => const PantallaAppBarMp(),
+        4 => const CatalogoBotonesMp(),
+        5 => const PantallaNavegacionMp(),
+        6 => const PantallaDialogsMp(),
+        7 => PantallaAjustesMp(
+          themeMode: _themeMode,
+          seedColor: _seedColor,
+          onThemeMode: (mode) {
+            setState(() => _themeMode = mode);
+          },
+          onSeedColor: (color) {
+            setState(() => _seedColor = color);
+          },
+          paletas: _paletas,
+        ),
         _ => Scaffold(
-            body: Center(child: Text('Paso $paso: crea el widget primero'))),
+          body: Center(child: Text('Paso $paso: crea el widget primero')),
+        ),
       },
     );
   }
@@ -67,12 +99,12 @@ class _Paso1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs   = Theme.of(context).colorScheme;
+    final cs = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
 
     return Scaffold(
       appBar: AppBar(
-        title:           const Text('Sistema de Monitoreo'),
+        title: const Text('Sistema de Monitoreo'),
         backgroundColor: cs.primaryContainer,
         foregroundColor: cs.onPrimaryContainer,
         actions: [
@@ -97,7 +129,7 @@ class _Paso1 extends StatelessWidget {
             const SizedBox(height: 24),
             FilledButton.icon(
               onPressed: () {},
-              icon:  const Icon(Icons.terminal),
+              icon: const Icon(Icons.terminal),
               label: const Text('Conectar SSH'),
             ),
           ],

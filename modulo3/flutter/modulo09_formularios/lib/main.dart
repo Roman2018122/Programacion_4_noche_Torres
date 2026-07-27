@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'widgets/formulario_servidor.dart';
 import 'models/servidor_ssh.dart';
 import 'widgets/fila_servidor.dart';
-import 'screens/pantalla_servidores.dart';
-import 'screens/pantalla_busqueda.dart';
+//import 'screens/pantalla_servidores.dart';
+import 'screens/pantalla_servidores_mp.dart';
+//import 'screens/pantalla_busqueda.dart';
+import 'screens/pantalla_busqueda_mp.dart';
+
+import 'screens/pantalla_gestor_mp.dart';
 
 // ┌──────────────────────────────────────────────────────────────────┐
 // │  Cambia este número y guarda (Ctrl+S) para navegar entre pasos. │
@@ -14,25 +18,26 @@ import 'screens/pantalla_busqueda.dart';
 // │  4  Paso 4  GridView.builder + toggle lista/grid                │
 // │  5  Paso 5  SearchBar + filtrado en tiempo real                 │
 // └──────────────────────────────────────────────────────────────────┘
-const int paso = 4;
+const int paso = 6;
 
-void main() => runApp(MaterialApp(
-  debugShowCheckedModeBanner: false,
-  theme: ThemeData(
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF1B5E20),
+void main() => runApp(
+  MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1B5E20)),
+      useMaterial3: true,
     ),
-    useMaterial3: true,
+    home: switch (paso) {
+      1 => const _Paso1(),
+      2 => const _Paso2(),
+      3 => const _Paso3(),
+      4 => const PantallaServidoresMp(),
+      5 => const PantallaBusquedaMp(),
+      6 => const PantallaGestorMp(),
+      _ => Scaffold(body: Center(child: Text('Paso $paso no definido'))),
+    },
   ),
-  home: switch (paso) {
-    1 => const _Paso1(),
-    2 => const _Paso2(),
-    3 => const _Paso3(),
-    4 => const PantallaServidores(),
-    5 => const PantallaBusqueda(),
-    _ => Scaffold(body: Center(child: Text('Paso $paso no definido'))),
-  },
-));
+);
 
 // ─── Paso 1 ────────────────────────────────────────────────────────────
 class _Paso1 extends StatefulWidget {
@@ -43,10 +48,10 @@ class _Paso1 extends StatefulWidget {
 
 class _Paso1State extends State<_Paso1> {
   final _ctrlHostname = TextEditingController();
-  final _ctrlIp       = TextEditingController();
-  final _ctrlPuerto   = TextEditingController(text: '22');
-  final _focusIp      = FocusNode();
-  final _focusPuerto  = FocusNode();
+  final _ctrlIp = TextEditingController();
+  final _ctrlPuerto = TextEditingController(text: '22');
+  final _focusIp = FocusNode();
+  final _focusPuerto = FocusNode();
 
   @override
   void dispose() {
@@ -64,7 +69,7 @@ class _Paso1State extends State<_Paso1> {
 
     return Scaffold(
       appBar: AppBar(
-        title:           const Text('Conexión SSH'),
+        title: const Text('Conexión SSH'),
         backgroundColor: cs.primaryContainer,
         foregroundColor: cs.onPrimaryContainer,
       ),
@@ -74,42 +79,42 @@ class _Paso1State extends State<_Paso1> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller:      _ctrlHostname,
-              decoration:      const InputDecoration(
-                labelText:  'Hostname',
-                hintText:   'prod-web-01',
+              controller: _ctrlHostname,
+              decoration: const InputDecoration(
+                labelText: 'Hostname',
+                hintText: 'prod-web-01',
                 prefixIcon: Icon(Icons.dns),
-                border:     OutlineInputBorder(),
+                border: OutlineInputBorder(),
               ),
               textInputAction: TextInputAction.next,
-              onSubmitted:     (_) => _focusIp.requestFocus(),
+              onSubmitted: (_) => _focusIp.requestFocus(),
             ),
             const SizedBox(height: 12),
             TextField(
-              controller:      _ctrlIp,
-              focusNode:       _focusIp,
-              decoration:      const InputDecoration(
-                labelText:  'Dirección IP',
-                hintText:   '192.168.1.100',
+              controller: _ctrlIp,
+              focusNode: _focusIp,
+              decoration: const InputDecoration(
+                labelText: 'Dirección IP',
+                hintText: '192.168.1.100',
                 prefixIcon: Icon(Icons.router),
-                border:     OutlineInputBorder(),
+                border: OutlineInputBorder(),
               ),
-              keyboardType:    TextInputType.number,
+              keyboardType: TextInputType.number,
               textInputAction: TextInputAction.next,
-              onSubmitted:     (_) => _focusPuerto.requestFocus(),
+              onSubmitted: (_) => _focusPuerto.requestFocus(),
             ),
             const SizedBox(height: 12),
             TextField(
-              controller:      _ctrlPuerto,
-              focusNode:       _focusPuerto,
-              decoration:      const InputDecoration(
-                labelText:  'Puerto SSH',
+              controller: _ctrlPuerto,
+              focusNode: _focusPuerto,
+              decoration: const InputDecoration(
+                labelText: 'Puerto SSH',
                 prefixIcon: Icon(Icons.lock_outline),
-                border:     OutlineInputBorder(),
+                border: OutlineInputBorder(),
               ),
-              keyboardType:    TextInputType.number,
+              keyboardType: TextInputType.number,
               textInputAction: TextInputAction.done,
-              onSubmitted:     (_) => FocusScope.of(context).unfocus(),
+              onSubmitted: (_) => FocusScope.of(context).unfocus(),
             ),
             const SizedBox(height: 20),
             FilledButton.icon(
@@ -125,7 +130,7 @@ class _Paso1State extends State<_Paso1> {
                   ),
                 );
               },
-              icon:  const Icon(Icons.terminal),
+              icon: const Icon(Icons.terminal),
               label: const Text('Conectar'),
             ),
             const SizedBox(height: 8),
@@ -154,7 +159,7 @@ class _Paso2 extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title:           const Text('Nuevo servidor'),
+        title: const Text('Nuevo servidor'),
         backgroundColor: cs.primaryContainer,
         foregroundColor: cs.onPrimaryContainer,
       ),
@@ -165,7 +170,8 @@ class _Paso2 extends StatelessWidget {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                    'Guardado: ${datos['nombre']} — ${datos['ip']}:${datos['puerto']}'),
+                  'Guardado: ${datos['nombre']} — ${datos['ip']}:${datos['puerto']}',
+                ),
                 behavior: SnackBarBehavior.floating,
               ),
             );
@@ -185,10 +191,43 @@ class _Paso3 extends StatefulWidget {
 
 class _Paso3State extends State<_Paso3> {
   final _servidores = [
-    ServidorSSH(id:'1', nombre:'prod-web-01',  ip:'10.0.2.10',   puerto:22,   usuario:'deploy',   so:'Ubuntu 24.04', ssl:true,  favorito:true),
-    ServidorSSH(id:'2', nombre:'prod-db-01',   ip:'10.0.2.20',   puerto:22,   usuario:'postgres', so:'Debian 12',    ssl:true),
-    ServidorSSH(id:'3', nombre:'staging-api',  ip:'10.0.3.10',   puerto:2222, usuario:'ubuntu',   so:'Ubuntu 24.04', ssl:false),
-    ServidorSSH(id:'4', nombre:'dev-sandbox',  ip:'192.168.1.5', puerto:22,   usuario:'vagrant',  so:'Alpine Linux', ssl:false),
+    ServidorSSH(
+      id: '1',
+      nombre: 'prod-web-01',
+      ip: '10.0.2.10',
+      puerto: 22,
+      usuario: 'deploy',
+      so: 'Ubuntu 24.04',
+      ssl: true,
+      favorito: true,
+    ),
+    ServidorSSH(
+      id: '2',
+      nombre: 'prod-db-01',
+      ip: '10.0.2.20',
+      puerto: 22,
+      usuario: 'postgres',
+      so: 'Debian 12',
+      ssl: true,
+    ),
+    ServidorSSH(
+      id: '3',
+      nombre: 'staging-api',
+      ip: '10.0.3.10',
+      puerto: 2222,
+      usuario: 'ubuntu',
+      so: 'Ubuntu 24.04',
+      ssl: false,
+    ),
+    ServidorSSH(
+      id: '4',
+      nombre: 'dev-sandbox',
+      ip: '192.168.1.5',
+      puerto: 22,
+      usuario: 'vagrant',
+      so: 'Alpine Linux',
+      ssl: false,
+    ),
   ];
 
   @override
@@ -197,7 +236,7 @@ class _Paso3State extends State<_Paso3> {
 
     return Scaffold(
       appBar: AppBar(
-        title:           Text('Servidores (${_servidores.length})'),
+        title: Text('Servidores (${_servidores.length})'),
         backgroundColor: cs.primaryContainer,
         foregroundColor: cs.onPrimaryContainer,
       ),
@@ -206,23 +245,28 @@ class _Paso3State extends State<_Paso3> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.dns_outlined, size: 56, color: cs.onSurfaceVariant),
+                  Icon(
+                    Icons.dns_outlined,
+                    size: 56,
+                    color: cs.onSurfaceVariant,
+                  ),
                   const SizedBox(height: 12),
-                  Text('Sin servidores',
-                      style: TextStyle(color: cs.onSurfaceVariant)),
+                  Text(
+                    'Sin servidores',
+                    style: TextStyle(color: cs.onSurfaceVariant),
+                  ),
                 ],
               ),
             )
           : ListView.separated(
-              itemCount:        _servidores.length,
-              separatorBuilder: (_, _) =>
-                  const Divider(height: 1, indent: 72),
+              itemCount: _servidores.length,
+              separatorBuilder: (_, _) => const Divider(height: 1, indent: 72),
               itemBuilder: (ctx, i) => FilaServidor(
-                servidor:   _servidores[i],
-                onFavorito: () => setState(() =>
-                    _servidores[i].favorito = !_servidores[i].favorito),
-                onEliminar: () =>
-                    setState(() => _servidores.removeAt(i)),
+                servidor: _servidores[i],
+                onFavorito: () => setState(
+                  () => _servidores[i].favorito = !_servidores[i].favorito,
+                ),
+                onEliminar: () => setState(() => _servidores.removeAt(i)),
               ),
             ),
     );

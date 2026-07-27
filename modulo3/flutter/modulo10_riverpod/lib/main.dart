@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
-import 'screens/pantalla_servidores.dart';
+import 'screens/pantalla_vehiculos_mp.dart';
 // Importa las pantallas a medida que las crees en cada paso:
 // import 'screens/pantalla_busqueda.dart';
 // import 'screens/pantalla_metricas.dart';
@@ -39,12 +39,13 @@ class AppMonitoreo extends StatelessWidget {
       ),
       home: switch (paso) {
         1 => const _Paso1(),
-        2 => const PantallaServidores(),
+        2 => PantallaVehiculosMp(),
         // 3 => const PantallaBusqueda(),
         // 4 => const PantallaMetricas(),
         // 5 => const PantallaDashboard(),
         _ => Scaffold(
-            body: Center(child: Text('Paso $paso: crea el widget primero'))),
+          body: Center(child: Text('Paso $paso: crea el widget primero')),
+        ),
       },
     );
   }
