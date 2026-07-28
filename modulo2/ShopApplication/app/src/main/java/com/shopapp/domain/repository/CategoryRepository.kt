@@ -3,6 +3,7 @@ package com.shopapp.domain.repository
 
 import com.shopapp.domain.model.Category
 import com.shopapp.domain.model.CategoryPayload
+import com.shopapp.domain.model.CategoryStats
 
 interface CategoryRepository {
     suspend fun getCategories(): Result<List<Category>>
@@ -10,5 +11,5 @@ interface CategoryRepository {
     suspend fun createCategory(payload: CategoryPayload): Result<Category>
     suspend fun updateCategory(id: Int, payload: CategoryPayload): Result<Category>
     suspend fun deleteCategory(id: Int): Result<Unit>
-    suspend fun getStats(): Result<Map<String, Any>>
+    suspend fun getStats(): Result<CategoryStats>
 }

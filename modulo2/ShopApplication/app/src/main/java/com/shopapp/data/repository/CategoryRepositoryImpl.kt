@@ -6,6 +6,7 @@ import com.shopapp.data.remote.dto.toDomain
 import com.shopapp.data.remote.dto.toRequest
 import com.shopapp.domain.model.Category
 import com.shopapp.domain.model.CategoryPayload
+import com.shopapp.domain.model.CategoryStats
 import com.shopapp.domain.repository.CategoryRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -50,17 +51,11 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getStats(): Result<Map<String, Any>> = runCatching {
+    override suspend fun getStats(): Result<CategoryStats> = runCatching {
         val response = api.getStats()
         if (response.isSuccessful) {
             val s = response.body()!!
-
-            mapOf(
-                "total"    to s.total,
-                "active"   to s.active,
-                "inactive" to s.inactive,
-                "detail"   to s.detail // lista de categorías con num_products
-            )
+            CategoryStats(total = s.total, active = s.active, inactive = s.inactive)
         } else {
             error("Error ${response.code()}: ${response.errorBody()?.string()}")
         }

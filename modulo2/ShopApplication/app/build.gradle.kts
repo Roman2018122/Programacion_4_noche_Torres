@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.kotlin.serialization)
 }
 
 val localProperties = Properties()
@@ -88,9 +87,6 @@ dependencies {
 
     // ── Coroutines ────────────────────────────────────────
     implementation(libs.kotlinx.coroutines.android)
-
-    // ── Serialización ─────────────────────────────────────
-    implementation(libs.kotlinx.serialization.json)
 
     // ── Coil imágenes ─────────────────────────────────────
     implementation(libs.coil.compose)

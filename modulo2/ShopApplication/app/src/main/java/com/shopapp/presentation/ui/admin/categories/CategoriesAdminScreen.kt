@@ -1,5 +1,5 @@
+// presentation/ui/admin/categories/CategoriesAdminScreen.kt
 package com.shopapp.presentation.ui.admin.categories
-
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

@@ -73,23 +73,20 @@ class DashboardViewModel @Inject constructor(
                 val userStats     = userStatsDeferred.await().getOrThrow()
                 val lowStock      = lowStockDeferred.await().getOrNull()
 
-                @Suppress("UNCHECKED_CAST")
-                val ordersByStatus = (orderStats["by_status"] as? Map<String, Int>) ?: emptyMap()
-
                 val stats = DashboardStats(
-                    totalActiveProducts  = (productStats["total_active"]   as? Int)    ?: 0,
-                    outOfStockProducts   = (productStats["out_of_stock"]   as? Int)    ?: 0,
-                    totalStock           = (productStats["total_stock"]    as? Int)    ?: 0,
-                    avgPrice             = (productStats["avg_price"]      as? Double) ?: 0.0,
-                    activeCategories     = (categoryStats["active"]        as? Int)    ?: 0,
-                    totalCategories      = (categoryStats["total"]         as? Int)    ?: 0,
-                    totalOrders          = (orderStats["total_orders"]     as? Int)    ?: 0,
-                    totalRevenue         = (orderStats["total_revenue"]    as? Double) ?: 0.0,
-                    pendingOrders        = ordersByStatus["pending"]                   ?: 0,
-                    ordersByStatus       = ordersByStatus,
-                    activeUsers          = (userStats["active"]            as? Int)    ?: 0,
-                    totalUsers           = (userStats["total"]             as? Int)    ?: 0,
-                    staffUsers           = (userStats["staff"]             as? Int)    ?: 0,
+                    totalActiveProducts  = productStats.totalActive,
+                    outOfStockProducts   = productStats.outOfStock,
+                    totalStock           = productStats.totalStock,
+                    avgPrice             = productStats.avgPrice,
+                    activeCategories     = categoryStats.active,
+                    totalCategories      = categoryStats.total,
+                    totalOrders          = orderStats.totalOrders,
+                    totalRevenue         = orderStats.totalRevenue,
+                    pendingOrders        = orderStats.byStatus["pending"] ?: 0,
+                    ordersByStatus       = orderStats.byStatus,
+                    activeUsers          = userStats.active,
+                    totalUsers           = userStats.total,
+                    staffUsers           = userStats.staff,
                     lowStockProducts     = lowStock?.first
                         ?.filter { it.stock < 5 }
                         ?.take(5)

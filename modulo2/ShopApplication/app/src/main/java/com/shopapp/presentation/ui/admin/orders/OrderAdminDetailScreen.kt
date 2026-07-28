@@ -1,3 +1,4 @@
+// presentation/ui/admin/orders/OrderAdminDetailScreen.kt
 package com.shopapp.presentation.ui.admin.orders
 
 import androidx.compose.foundation.background
@@ -67,8 +68,8 @@ private fun AdminOrderDetailContent(
     val updatedStr = runCatching { outputFmt.format(inputFmt.parse(order.updatedAt)!!) }
         .getOrDefault(order.updatedAt.take(16))
 
-    val taxAmount = order.total - order.total / 1.15
-    val subtotal  = order.total - taxAmount
+    val subtotal  = order.total / IVA_RATE
+    val taxAmount = order.total - subtotal
 
     Scaffold(
         topBar = {
@@ -149,7 +150,7 @@ private fun AdminOrderDetailContent(
                     Spacer(Modifier.height(12.dp))
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         FinancialRow("Subtotal (sin IVA)", subtotal, false)
-                        FinancialRow("IVA (15%)",          taxAmount, false)
+                        FinancialRow("IVA ($IVA_RATE_LABEL)", taxAmount, false)
                         HorizontalDivider(color = Border, thickness = 0.5.dp)
                         FinancialRow("Total",              order.total, true)
                     }

@@ -1,4 +1,3 @@
-// presentation/ui/public/cart/CartBottomSheet.kt
 package com.shopapp.presentation.ui.uipublic.cart
 
 import androidx.compose.foundation.background
@@ -144,7 +143,7 @@ fun CartBottomSheet(
                 Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
                     TotalRow("Subtotal", "$${"%.2f".format(subtotal)}", false)
                     Spacer(Modifier.height(4.dp))
-                    TotalRow("IVA (15%)", "$${"%.2f".format(totalWithTax - subtotal)}", false)
+                    TotalRow("IVA ($IVA_RATE_LABEL)", "$${"%.2f".format((totalWithTax - subtotal))}", false)
                     Spacer(Modifier.height(8.dp))
                     HorizontalDivider(color = Border, thickness = 0.5.dp)
                     Spacer(Modifier.height(8.dp))

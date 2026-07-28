@@ -22,9 +22,10 @@ import com.shopapp.theme.*
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess:  (isStaff: Boolean) -> Unit,
+    onLoginSuccess:       (isStaff: Boolean) -> Unit,
     onNavigateToRegister: () -> Unit,
-    viewModel: AuthViewModel = hiltViewModel(),
+    onForgotPassword:     () -> Unit = {},
+    viewModel:            AuthViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -70,7 +71,7 @@ fun LoginScreen(
             )
             Spacer(Modifier.height(40.dp))
 
-            // Formulario
+            // Card del formulario
             Surface(
                 shape            = MaterialTheme.shapes.large,
                 color            = Surface,
@@ -130,7 +131,13 @@ fun LoginScreen(
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(12.dp))
+
+            TextButton(onClick = onForgotPassword, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text("¿Olvidaste tu contraseña?", color = Accent, style = MaterialTheme.typography.bodyMedium)
+            }
+
+            Spacer(Modifier.height(12.dp))
 
             // Link a registro
             Row(verticalAlignment = Alignment.CenterVertically) {

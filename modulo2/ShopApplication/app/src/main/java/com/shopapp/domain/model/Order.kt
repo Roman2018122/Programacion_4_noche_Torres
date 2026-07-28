@@ -22,6 +22,12 @@ data class OrderItem(
     val subtotal: Double,
 )
 
+data class OrderStats(
+    val totalOrders:  Int,
+    val totalRevenue: Double,
+    val byStatus:     Map<String, Int>,
+)
+
 data class Order(
     val id: Int,
     val username: String,

@@ -27,3 +27,6 @@ val StatusConfirmed = Color(0xFF3B82F6)
 val StatusShipped = Color(0xFF8B5CF6)
 val StatusDelivered = Color(0xFF22C55E)
 val StatusCancelled = Color(0xFFEF4444)
+
+const val IVA_RATE = 1.15
+const val IVA_RATE_LABEL = "15%"

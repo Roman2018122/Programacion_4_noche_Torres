@@ -2,9 +2,10 @@
 package com.shopapp.data.remote.api
 
 import com.shopapp.data.remote.dto.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
-import okhttp3.MultipartBody
 
 interface ProductApi {
     @GET("products/")
@@ -39,12 +40,30 @@ interface ProductApi {
     @GET("products/stats/")
     suspend fun getStats(): Response<ProductStatsDto>
 
+    // ── Multipart (con imagen) ─────────────────────────────────
 
+    @Multipart
+    @POST("products/")
+    suspend fun createProductWithImage(
+        @Part("name")        name:        RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("price")       price:       RequestBody,
+        @Part("stock")       stock:       RequestBody,
+        @Part("is_active")   isActive:    RequestBody,
+        @Part("category_id") categoryId:  RequestBody,
+        @Part               image:       MultipartBody.Part,
+    ): Response<ProductDto>
 
     @Multipart
     @PATCH("products/{id}/")
-    suspend fun uploadProductImage(
-        @Path("id") id: Int,
-        @Part image: MultipartBody.Part,
+    suspend fun updateProductWithImage(
+        @Path("id")          id:          Int,
+        @Part("name")        name:        RequestBody,
+        @Part("description") description: RequestBody,
+        @Part("price")       price:       RequestBody,
+        @Part("stock")       stock:       RequestBody,
+        @Part("is_active")   isActive:    RequestBody,
+        @Part("category_id") categoryId:  RequestBody,
+        @Part               image:       MultipartBody.Part,
     ): Response<ProductDto>
 }

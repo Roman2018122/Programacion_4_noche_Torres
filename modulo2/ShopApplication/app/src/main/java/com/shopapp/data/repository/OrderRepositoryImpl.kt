@@ -6,6 +6,7 @@ import com.shopapp.data.remote.dto.AddItemRequestDto
 import com.shopapp.data.remote.dto.UpdateStatusRequestDto
 import com.shopapp.data.remote.dto.toDomain
 import com.shopapp.domain.model.Order
+import com.shopapp.domain.model.OrderStats
 import com.shopapp.domain.model.OrderStatus
 import com.shopapp.domain.repository.OrderRepository
 import javax.inject.Inject
@@ -57,15 +58,11 @@ class OrderRepositoryImpl @Inject constructor(
             else error("Error ${response.code()}")
         }
 
-    override suspend fun getStats(): Result<Map<String, Any>> = runCatching {
+    override suspend fun getStats(): Result<OrderStats> = runCatching {
         val response = api.getStats()
         if (response.isSuccessful) {
             val s = response.body()!!
-            mapOf(
-                "total_orders"  to s.totalOrders,
-                "total_revenue" to s.totalRevenue,
-                "by_status"     to s.byStatus,
-            )
+            OrderStats(totalOrders = s.totalOrders, totalRevenue = s.totalRevenue, byStatus = s.byStatus)
         } else error("Error ${response.code()}")
     }
 }

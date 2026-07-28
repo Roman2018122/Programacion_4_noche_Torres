@@ -22,6 +22,7 @@ import com.shopapp.domain.model.OrderStatus
 import com.shopapp.presentation.components.ErrorScreen
 import com.shopapp.presentation.components.LoadingScreen
 import com.shopapp.presentation.components.StatusBadge
+import com.shopapp.presentation.components.orderStatusColor
 import com.shopapp.presentation.viewmodel.OrderDetailUiState
 import com.shopapp.presentation.viewmodel.OrderDetailViewModel
 import com.shopapp.theme.*
@@ -65,8 +66,8 @@ private fun OrderDetailContent(order: Order, onBack: () -> Unit) {
 
     val isCancelled = order.status == OrderStatus.CANCELLED
     val currentStep = PROGRESS_STEPS.indexOf(order.status).coerceAtLeast(0)
-    val taxAmount   = order.total - order.total / 1.15
-    val subtotal    = order.total - taxAmount
+    val subtotal   = order.total / IVA_RATE
+    val taxAmount  = order.total - subtotal
 
     Scaffold(
         topBar = {
@@ -137,7 +138,7 @@ private fun OrderDetailContent(order: Order, onBack: () -> Unit) {
             SectionCard(title = "Resumen") {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     TotalLine("Subtotal (sin IVA)", subtotal,  false)
-                    TotalLine("IVA (15%)",           taxAmount, false)
+                    TotalLine("IVA ($IVA_RATE_LABEL)", taxAmount, false)
                     HorizontalDivider(color = Border, thickness = 0.5.dp)
                     TotalLine("Total",               order.total, true)
                 }

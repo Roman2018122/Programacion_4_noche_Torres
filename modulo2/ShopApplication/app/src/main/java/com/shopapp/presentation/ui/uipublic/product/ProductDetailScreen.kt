@@ -1,4 +1,4 @@
-// presentation/ui/public/product/ProductDetailScreen.kt
+// presentation/ui/uipublic/product/ProductDetailScreen.kt
 package com.shopapp.presentation.ui.uipublic.product
 
 import androidx.compose.foundation.background
@@ -80,8 +80,6 @@ fun ProductDetailScreen(
         )
     }
 }
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -179,7 +177,7 @@ private fun ProductDetailContent(
                 color      = Accent,
             )
             Text(
-                text  = "$${"%.2f".format(product.priceWithTax)} con IVA (15%)",
+                text  = "$${"%.2f".format(product.priceWithTax)} con IVA ($IVA_RATE_LABEL)",
                 style = MaterialTheme.typography.bodySmall,
                 color = TextSecondary,
             )

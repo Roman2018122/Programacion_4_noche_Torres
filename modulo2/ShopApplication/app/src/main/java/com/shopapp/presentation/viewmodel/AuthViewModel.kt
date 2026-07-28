@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shopapp.data.local.TokenDataStore
 import com.shopapp.domain.model.LoggedUser
+import com.shopapp.domain.model.UserPayload
 import com.shopapp.domain.repository.AuthRepository
+import com.shopapp.domain.repository.UserRepository
 import com.shopapp.presentation.ui.auth.AuthUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -16,6 +18,7 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokenDataStore: TokenDataStore,
+    private val userRepository: UserRepository,
 ) : ViewModel() {
 
     // ── Estado de la UI ───────────────────────────────────────
@@ -40,6 +43,12 @@ class AuthViewModel @Inject constructor(
 
     init {
         restoreSession()
+        // Si el interceptor limpia la sesión (token expirado), forzar logout
+        viewModelScope.launch {
+            tokenDataStore.sessionCleared.collect {
+                _currentUser.value = null
+            }
+        }
     }
 
     // Restaurar sesión desde DataStore al arrancar la app
@@ -107,4 +116,36 @@ class AuthViewModel @Inject constructor(
             _uiState.value = AuthUiState.Idle
         }
     }
+
+    // ── Solicitar acceso administrador ─────────────────────────
+    private val _staffRequestState = MutableStateFlow<String?>(null)
+    val staffRequestState: StateFlow<String?> = _staffRequestState.asStateFlow()
+
+    fun requestStaffAccess() {
+        val user = _currentUser.value ?: return
+        if (_staffRequestState.value != null) return
+        viewModelScope.launch {
+            _staffRequestState.value = "Solicitando..."
+            userRepository.updateUser(
+                user.id,
+                UserPayload(
+                    username  = user.username,
+                    email     = user.email,
+                    firstName = "",
+                    lastName  = "",
+                    isActive  = true,
+                    isStaff   = true,
+                )
+            ).onSuccess {
+                val newUser = user.copy(isStaff = true)
+                _currentUser.value = newUser
+                tokenDataStore.saveUser(user.id, user.username, user.email, true)
+                _staffRequestState.value = "¡Acceso de administrador activado! Vuelve a iniciar sesión."
+            }.onFailure {
+                _staffRequestState.value = "No se pudo activar: ${it.message}"
+            }
+        }
+    }
+
+    fun clearStaffRequest() { _staffRequestState.value = null }
 }

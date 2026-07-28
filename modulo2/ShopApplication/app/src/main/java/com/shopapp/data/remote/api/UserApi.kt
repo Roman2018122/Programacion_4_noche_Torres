@@ -5,9 +5,6 @@ import com.shopapp.data.remote.dto.*
 import retrofit2.Response
 import retrofit2.http.*
 
-
-import okhttp3.MultipartBody
-
 interface UserApi {
     @GET("users/")
     suspend fun getUsers(
@@ -41,13 +38,9 @@ interface UserApi {
     @GET("users/stats/")
     suspend fun getStats(): Response<UserStatsDto>
 
-    @Multipart
-    @PATCH("users/profile/")
-    suspend fun uploadAvatar(
-        @Part avatar: MultipartBody.Part,
-    ): Response<UserDto>
-
-
-
-
+    // ── Notificaciones de staff ──────────────────────────────
+    @POST("emails/send/")
+    suspend fun sendNotification(
+        @Body body: SendNotificationDto,
+    ): Response<NotificationResultDto>
 }

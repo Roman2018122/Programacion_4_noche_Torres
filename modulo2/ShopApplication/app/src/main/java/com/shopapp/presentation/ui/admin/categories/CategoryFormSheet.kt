@@ -1,3 +1,4 @@
+// presentation/ui/admin/categories/CategoryFormSheet.kt
 package com.shopapp.presentation.ui.admin.categories
 
 import androidx.compose.foundation.layout.*
@@ -66,9 +67,7 @@ fun CategoryFormSheet(
             Box(
                 modifier         = Modifier
                     .padding(vertical = 12.dp)
-                    .size(40.dp, 4.dp)
-                    .then(Modifier)
-                    .padding(0.dp),
+                    .size(40.dp, 4.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Surface(

@@ -1,3 +1,4 @@
+// presentation/ui/admin/products/RestockDialog.kt
 package com.shopapp.presentation.ui.admin.products
 
 import androidx.compose.foundation.layout.*
@@ -14,7 +15,7 @@ import com.shopapp.theme.*
 @Composable
 fun RestockDialog(
     product:   Product,
-    onRestock: (Int) -> Unit,
+    onRestock: (Int, (Boolean, String?) -> Unit) -> Unit,
     onDismiss: () -> Unit,
 ) {
     var qty       by remember { mutableStateOf("") }
@@ -76,7 +77,13 @@ fun RestockDialog(
         },
         confirmButton = {
             Button(
-                onClick = { isLoading = true; onRestock(qtyVal!!) },
+                onClick = {
+                    isLoading = true
+                    onRestock(qtyVal!!) { success, message ->
+                        isLoading = false
+                        if (message != null) feedback = message
+                    }
+                },
                 enabled = canRestock,
                 colors  = ButtonDefaults.buttonColors(
                     containerColor         = Accent,

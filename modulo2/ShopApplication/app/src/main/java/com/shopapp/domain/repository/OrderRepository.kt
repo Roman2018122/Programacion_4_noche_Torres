@@ -2,6 +2,7 @@
 package com.shopapp.domain.repository
 
 import com.shopapp.domain.model.Order
+import com.shopapp.domain.model.OrderStats
 import com.shopapp.domain.model.OrderStatus
 
 interface OrderRepository {
@@ -11,5 +12,5 @@ interface OrderRepository {
     suspend fun addItem(orderId: Int, productId: Int, quantity: Int): Result<Order>
     suspend fun confirmOrder(orderId: Int): Result<Order>
     suspend fun updateStatus(orderId: Int, status: OrderStatus): Result<Order>
-    suspend fun getStats(): Result<Map<String, Any>>
+    suspend fun getStats(): Result<OrderStats>
 }

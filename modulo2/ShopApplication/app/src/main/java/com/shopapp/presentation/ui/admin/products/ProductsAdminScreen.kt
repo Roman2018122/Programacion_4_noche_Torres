@@ -1,3 +1,4 @@
+// presentation/ui/admin/products/ProductsAdminScreen.kt
 package com.shopapp.presentation.ui.admin.products
 
 import androidx.compose.foundation.background
@@ -204,9 +205,9 @@ fun ProductsAdminScreen(
     restockTarget?.let { product ->
         RestockDialog(
             product   = product,
-            onRestock = { qty ->
+            onRestock = { qty, onResult ->
                 viewModel.restock(product.id, qty) { msg ->
-                    snackMsg      = msg
+                    onResult(!msg.startsWith("Error"), msg)
                     restockTarget = null
                 }
             },

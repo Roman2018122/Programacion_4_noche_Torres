@@ -1,15 +1,29 @@
+// presentation/ui/admin/products/ProductFormSheet.kt
 package com.shopapp.presentation.ui.admin.products
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.shopapp.domain.model.Category
 import com.shopapp.domain.model.Product
 import com.shopapp.domain.model.ProductPayload
@@ -25,7 +39,6 @@ fun ProductFormSheet(
     formState:  ProductFormState,
     onSave:     (ProductPayload) -> Unit,
     onDismiss:  () -> Unit,
-    onImageUpdated: () -> Unit = {},
 ) {
     val isEdit = initial != null
 
@@ -37,6 +50,14 @@ fun ProductFormSheet(
     var selectedCat by remember { mutableStateOf(initial?.categoryId) }
     var catExpanded by remember { mutableStateOf(false) }
 
+    var imageUri    by remember { mutableStateOf<Uri?>(null) }
+    var imageBytes  by remember { mutableStateOf<ByteArray?>(null) }
+    val context     = LocalContext.current
+    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        imageUri = uri
+        imageBytes = uri?.let { context.contentResolver.openInputStream(it)?.readBytes() }
+    }
+
     val isSaving   = formState is ProductFormState.Saving
     val priceVal   = price.toDoubleOrNull()
     val stockVal   = stock.toIntOrNull()
@@ -46,18 +67,6 @@ fun ProductFormSheet(
     val canSave    = name.length >= 2 && priceVal != null && priceVal > 0 &&
             stockVal != null && stockVal >= 0 &&
             selectedCat != null && !isSaving
-
-
-    ProductImageSection(
-        productId       = initial.id,
-        currentImageUrl = initial.imageUrl,
-        isStaff         = true,         // solo staff llega hasta aquí
-        onImageUpdated  = onImageUpdated,
-        modifier        = Modifier
-            .fillMaxWidth()
-            .height(220.dp),
-    )
-    Spacer(Modifier.height(8.dp))
 
     LaunchedEffect(formState) {
         if (formState is ProductFormState.Success) onDismiss()
@@ -82,6 +91,44 @@ fun ProductFormSheet(
                 fontWeight = FontWeight.Bold,
                 color      = TextPrimary,
             )
+
+            // ── Selector de imagen ─────────────────────────────────
+            Box(
+                modifier         = Modifier
+                    .size(120.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(Surface2)
+                    .clickable { imagePicker.launch("image/*") },
+                contentAlignment = Alignment.Center,
+            ) {
+                if (imageUri != null) {
+                    AsyncImage(
+                        model              = imageUri,
+                        contentDescription = "Foto seleccionada",
+                        contentScale       = ContentScale.Crop,
+                        modifier           = Modifier.fillMaxSize(),
+                    )
+                    IconButton(
+                        onClick = { imageUri = null; imageBytes = null },
+                        modifier = Modifier.align(Alignment.TopEnd).size(24.dp),
+                    ) {
+                        Icon(Icons.Default.Close, "Quitar", tint = Error, modifier = Modifier.size(18.dp).clip(CircleShape).background(Surface))
+                    }
+                } else if (isEdit && initial?.imageUrl != null) {
+                    AsyncImage(
+                        model              = initial.imageUrl,
+                        contentDescription = initial.name,
+                        contentScale       = ContentScale.Crop,
+                        modifier           = Modifier.fillMaxSize(),
+                    )
+                } else {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.CameraAlt, null, tint = TextSecondary, modifier = Modifier.size(32.dp))
+                        Spacer(Modifier.height(4.dp))
+                        Text("Foto", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+                    }
+                }
+            }
 
             // Error global
             if (formState is ProductFormState.Error) {
@@ -253,6 +300,7 @@ fun ProductFormSheet(
                             stock       = stockVal!!,
                             isActive    = isActive,
                             categoryId  = selectedCat!!,
+                            imageBytes  = imageBytes,
                         ))
                     },
                     enabled  = canSave,

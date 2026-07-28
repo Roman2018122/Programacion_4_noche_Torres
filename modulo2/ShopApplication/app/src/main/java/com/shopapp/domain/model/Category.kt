@@ -10,6 +10,12 @@ data class Category(
     val createdAt: String,
 )
 
+data class CategoryStats(
+    val total:    Int,
+    val active:   Int,
+    val inactive: Int,
+)
+
 data class CategoryPayload(
     val name: String,
     val slug: String,

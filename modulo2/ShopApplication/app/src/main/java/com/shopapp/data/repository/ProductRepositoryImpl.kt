@@ -8,22 +8,17 @@ import com.shopapp.data.remote.dto.toRequest
 import com.shopapp.domain.model.Product
 import com.shopapp.domain.model.ProductFilters
 import com.shopapp.domain.model.ProductPayload
+import com.shopapp.domain.model.ProductStats
 import com.shopapp.domain.repository.ProductRepository
-import javax.inject.Inject
-import javax.inject.Singleton
-
-
-import android.content.Context
-import android.net.Uri
-import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class ProductRepositoryImpl @Inject constructor(
     private val api: ProductApi,
-    @ApplicationContext private val context: Context
 ) : ProductRepository {
 
     override suspend fun getProducts(filters: ProductFilters): Result<Pair<List<Product>, Int>> =
@@ -46,18 +41,6 @@ class ProductRepositoryImpl @Inject constructor(
             } else error("Error ${response.code()}")
         }
 
-
-    override suspend fun uploadProductImage(id: Int, uri: Uri): Result<String> =
-        runCatching {
-            val part     = uri.toMultipart(context, fieldName = "image")
-            val response = api.uploadProductImage(id, part)
-            if (response.isSuccessful) {
-                response.body()?.imageUrl ?: error("El servidor no devolvió una URL de imagen")
-            } else {
-                error(response.errorBody()?.string() ?: "Error ${response.code()}")
-            }
-        }
-
     override suspend fun getProduct(id: Int): Result<Product> = runCatching {
         val response = api.getProduct(id)
         if (response.isSuccessful) response.body()!!.toDomain()
@@ -65,16 +48,53 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createProduct(payload: ProductPayload): Result<Product> = runCatching {
-        val response = api.createProduct(payload.toRequest())
-        if (response.isSuccessful) response.body()!!.toDomain()
-        else error("Error ${response.code()}: ${response.errorBody()?.string()}")
+        val bytes = payload.imageBytes
+        if (bytes != null) {
+            val imagePart = MultipartBody.Part.createFormData(
+                "image", "photo.jpg", bytes.toRequestBody("image/*".toMediaTypeOrNull()),
+            )
+            val response = api.createProductWithImage(
+                name        = payload.name.toRequestBody("text/plain".toMediaTypeOrNull()),
+                description = payload.description.toRequestBody("text/plain".toMediaTypeOrNull()),
+                price       = payload.price.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                stock       = payload.stock.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                isActive    = payload.isActive.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                categoryId  = payload.categoryId.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                image       = imagePart,
+            )
+            if (response.isSuccessful) response.body()!!.toDomain()
+            else error("Error ${response.code()}: ${response.errorBody()?.string()}")
+        } else {
+            val response = api.createProduct(payload.toRequest())
+            if (response.isSuccessful) response.body()!!.toDomain()
+            else error("Error ${response.code()}: ${response.errorBody()?.string()}")
+        }
     }
 
     override suspend fun updateProduct(id: Int, payload: ProductPayload): Result<Product> =
         runCatching {
-            val response = api.updateProduct(id, payload.toRequest())
-            if (response.isSuccessful) response.body()!!.toDomain()
-            else error("Error ${response.code()}: ${response.errorBody()?.string()}")
+            val bytes = payload.imageBytes
+            if (bytes != null) {
+                val imagePart = MultipartBody.Part.createFormData(
+                    "image", "photo.jpg", bytes.toRequestBody("image/*".toMediaTypeOrNull()),
+                )
+                val response = api.updateProductWithImage(
+                    id          = id,
+                    name        = payload.name.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    description = payload.description.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    price       = payload.price.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                    stock       = payload.stock.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                    isActive    = payload.isActive.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                    categoryId  = payload.categoryId.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                    image       = imagePart,
+                )
+                if (response.isSuccessful) response.body()!!.toDomain()
+                else error("Error ${response.code()}: ${response.errorBody()?.string()}")
+            } else {
+                val response = api.updateProduct(id, payload.toRequest())
+                if (response.isSuccessful) response.body()!!.toDomain()
+                else error("Error ${response.code()}: ${response.errorBody()?.string()}")
+            }
         }
 
     override suspend fun deleteProduct(id: Int): Result<Unit> = runCatching {
@@ -88,26 +108,19 @@ class ProductRepositoryImpl @Inject constructor(
         else error("Error ${response.code()}")
     }
 
-    override suspend fun getStats(): Result<Map<String, Any>> = runCatching {
+    override suspend fun getStats(): Result<ProductStats> = runCatching {
         val response = api.getStats()
         if (response.isSuccessful) {
             val s = response.body()!!
-            mapOf(
-                "total_active"   to s.totalActive,
-                "total_inactive" to s.totalInactive,
-                "avg_price"      to (s.avgPrice ?: 0.0),
-                "total_stock"    to (s.totalStock ?: 0),
-                "out_of_stock"   to s.outOfStock,
+            ProductStats(
+                totalActive   = s.totalActive,
+                totalInactive = s.totalInactive,
+                avgPrice      = s.avgPrice ?: 0.0,
+                maxPrice      = s.maxPrice,
+                minPrice      = s.minPrice,
+                totalStock    = s.totalStock ?: 0,
+                outOfStock    = s.outOfStock,
             )
         } else error("Error ${response.code()}")
     }
-    internal fun Uri.toMultipart(context: Context, fieldName: String): MultipartBody.Part {
-        val resolver    = context.contentResolver
-        val mimeType    = resolver.getType(this) ?: "image/jpeg"
-        val bytes       = resolver.openInputStream(this)?.readBytes()
-            ?: error("No se pudo leer el archivo seleccionado")
-        val requestBody = bytes.toRequestBody(mimeType.toMediaTypeOrNull())
-        val fileName    = "upload.${mimeType.substringAfterLast('/')}"
-        return MultipartBody.Part.createFormData(fieldName, fileName, requestBody)
-}
 }

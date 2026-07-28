@@ -2,19 +2,16 @@
 package com.shopapp.presentation.ui.uipublic.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -273,7 +270,7 @@ fun ProductCard(
                     color      = Accent,
                 )
                 Text(
-                    text  = "$${"%.2f".format(product.priceWithTax)} con IVA",
+                    text  = "$${"%.2f".format(product.priceWithTax)} con IVA ($IVA_RATE_LABEL)",
                     style = MaterialTheme.typography.bodySmall,
                     color = TextSecondary,
                 )
