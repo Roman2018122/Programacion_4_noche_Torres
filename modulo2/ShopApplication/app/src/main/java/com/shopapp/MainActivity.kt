@@ -1,4 +1,3 @@
-// MainActivity.kt
 package com.shopapp
 
 import android.os.Bundle
@@ -16,14 +15,39 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val deepLink = intent?.data
+
+        val resetUid = deepLink
+            ?.takeIf {
+                it.scheme == "shopapp" &&
+                        it.host == "password-reset" &&
+                        it.path == "/confirm"
+            }
+            ?.getQueryParameter("uid")
+
+        val resetToken = deepLink
+            ?.takeIf {
+                it.scheme == "shopapp" &&
+                        it.host == "password-reset" &&
+                        it.path == "/confirm"
+            }
+            ?.getQueryParameter("token")
+
         setContent {
             ShopAppTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val authViewModel: AuthViewModel = hiltViewModel()
-                    NavGraph(authViewModel = authViewModel)
+
+                    NavGraph(
+                        authViewModel = authViewModel,
+                        resetUid = resetUid,
+                        resetToken = resetToken,
+                    )
                 }
             }
         }

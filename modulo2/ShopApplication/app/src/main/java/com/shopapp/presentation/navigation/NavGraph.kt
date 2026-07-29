@@ -63,9 +63,18 @@ private fun NavGraphBuilder.adminRoute(
 @Composable
 fun NavGraph(
     authViewModel: AuthViewModel,
+    resetUid: String? = null,
+    resetToken: String? = null,
     cartViewModel: CartViewModel = hiltViewModel(),
 ) {
     val navController     = rememberNavController()
+    LaunchedEffect(resetUid, resetToken) {
+        if (!resetUid.isNullOrBlank() && !resetToken.isNullOrBlank()) {
+            navController.navigate(Screen.ResetPasswordConfirm.route) {
+                launchSingleTop = true
+            }
+        }
+    }
     val isCheckingSession by authViewModel.isCheckingSession.collectAsState()
     val isAuthenticated   by authViewModel.isAuthenticated.collectAsState()
     val isStaff           by authViewModel.isStaff.collectAsState()
@@ -157,15 +166,16 @@ fun NavGraph(
 
             composable(Screen.ResetPasswordConfirm.route) {
                 ResetPasswordConfirmScreen(
-                    onBack         = { navController.popBackStack() },
+                    initialUid = resetUid.orEmpty(),
+                    initialToken = resetToken.orEmpty(),
+                    onBack = { navController.popBackStack() },
                     onResetSuccess = {
                         navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
+                            popUpTo(0) { inclusive = true }
                         }
                     },
                 )
             }
-
             // ── REGISTER ────────────────────────────
             composable(Screen.Register.route) {
                 RegisterScreen(

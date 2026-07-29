@@ -24,13 +24,20 @@ import com.shopapp.presentation.viewmodel.ResetPasswordConfirmViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResetPasswordConfirmScreen(
+    initialUid: String = "",
+    initialToken: String = "",
     onBack: () -> Unit,
     onResetSuccess: () -> Unit,
     viewModel: ResetPasswordConfirmViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-    var uid by remember { mutableStateOf("") }
-    var token by remember { mutableStateOf("") }
+    var uid by remember(initialUid) {
+        mutableStateOf(initialUid)
+    }
+
+    var token by remember(initialToken) {
+        mutableStateOf(initialToken)
+    }
     var newPassword by remember { mutableStateOf("") }
     var newPassword2 by remember { mutableStateOf("") }
     var showPass by remember { mutableStateOf(false) }
