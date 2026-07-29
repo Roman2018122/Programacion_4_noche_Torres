@@ -18,8 +18,11 @@ import com.shopapp.presentation.ui.admin.orders.OrderAdminDetailScreen
 import com.shopapp.presentation.ui.admin.orders.OrdersAdminScreen
 import com.shopapp.presentation.ui.admin.products.ProductsAdminScreen
 import com.shopapp.presentation.ui.admin.users.UsersAdminScreen
+import com.shopapp.presentation.ui.auth.ForgotPasswordScreen
 import com.shopapp.presentation.ui.auth.LoginScreen
 import com.shopapp.presentation.ui.auth.RegisterScreen
+import com.shopapp.presentation.ui.auth.ResetPasswordConfirmScreen
+import com.shopapp.presentation.ui.admin.users.SendNotificationScreen
 import com.shopapp.presentation.ui.client.orders.OrderDetailScreen
 import com.shopapp.presentation.ui.client.orders.OrdersScreen
 import com.shopapp.presentation.ui.client.profile.ProfileScreen
@@ -30,14 +33,37 @@ import com.shopapp.presentation.ui.uipublic.product.ProductDetailScreen
 import com.shopapp.presentation.viewmodel.AuthViewModel
 import com.shopapp.presentation.viewmodel.CartViewModel
 import com.shopapp.presentation.viewmodel.OrdersAdminViewModel
+import com.shopapp.domain.model.LoggedUser
 import com.shopapp.theme.Surface
 import com.shopapp.theme.TextSecondary
+
+private fun NavGraphBuilder.adminRoute(
+    route:         String,
+    title:         String,
+    isStaff:       Boolean,
+    currentUser:   LoggedUser?,
+    authViewModel: AuthViewModel,
+    navController: NavHostController,
+    content:       @Composable () -> Unit,
+) {
+    composable(route) {
+        if (!isStaff) {
+            LaunchedEffect(Unit) { navController.navigate(Screen.Home.route) { popUpTo(0) } }
+            return@composable
+        }
+        AdminScaffold(
+            currentRoute = route, user = currentUser, title = title,
+            onNavClick = { navController.navigate(it) { launchSingleTop = true; restoreState = true } },
+            onStoreClick = { navController.navigate(Screen.Home.route) },
+            onLogout = { authViewModel.logout(); navController.navigate(Screen.Login.route) { popUpTo(0) { inclusive = true } } },
+        ) { padding -> Box(Modifier.padding(padding)) { content() } }
+    }
+}
 
 @Composable
 fun NavGraph(
     authViewModel: AuthViewModel,
-    modifier: Modifier = Modifier,
-    cartViewModel: CartViewModel = hiltViewModel()
+    cartViewModel: CartViewModel = hiltViewModel(),
 ) {
     val navController     = rememberNavController()
     val isCheckingSession by authViewModel.isCheckingSession.collectAsState()
@@ -116,7 +142,27 @@ fun NavGraph(
                         }
                     },
                     onNavigateToRegister = { navController.navigate(Screen.Register.route) },
+                    onForgotPassword     = { navController.navigate(Screen.ForgotPassword.route) },
                     viewModel            = authViewModel,
+                )
+            }
+
+            // ── RECUPERACIÓN DE CONTRASEÑA ──────────
+            composable(Screen.ForgotPassword.route) {
+                ForgotPasswordScreen(
+                    onBack        = { navController.popBackStack() },
+                    onGoToConfirm = { navController.navigate(Screen.ResetPasswordConfirm.route) },
+                )
+            }
+
+            composable(Screen.ResetPasswordConfirm.route) {
+                ResetPasswordConfirmScreen(
+                    onBack         = { navController.popBackStack() },
+                    onResetSuccess = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    },
                 )
             }
 
@@ -199,223 +245,100 @@ fun NavGraph(
                     }
                 } else {
                     ProfileScreen(
+                        authViewModel      = authViewModel,
                         onLogout = {
-                            authViewModel.logout()
                             navController.navigate(Screen.Login.route) {
                                 popUpTo(0) { inclusive = true }
                             }
                         },
+                        onSendNotification = { navController.navigate(Screen.SendNotification.route) },
                     )
                 }
             }
 
-            // ── ADMIN DASHBOARD ────────────────────
-            composable(Screen.AdminDashboard.route) {
-                if (!isStaff) {
-                    LaunchedEffect(Unit) {
-                        navController.navigate(Screen.Home.route) { popUpTo(0) }
-                    }
-                    return@composable
-                }
-
-                AdminScaffold(
-                    currentRoute = Screen.AdminDashboard.route,
-                    user         = currentUser,
-                    title        = "Dashboard",
-                    onNavClick   = { route ->
-                        navController.navigate(route) {
-                            launchSingleTop = true
-                            restoreState    = true
-                        }
-                    },
-                    onStoreClick = { navController.navigate(Screen.Home.route) },
-                    onLogout     = {
-                        authViewModel.logout()
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                ) { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        DashboardScreen(
-                            onNavigate = { route -> navController.navigate(route) }
-                        )
-                    }
-                }
+            // ── RUTAS ADMIN ─────────────────────────
+            adminRoute(
+                route = Screen.AdminDashboard.route,
+                title = "Dashboard",
+                isStaff = isStaff,
+                currentUser = currentUser,
+                authViewModel = authViewModel,
+                navController = navController,
+            ) {
+                DashboardScreen(onNavigate = { route -> navController.navigate(route) })
             }
 
-            // ── ADMIN CATEGORIES ───────────────────
-            composable("admin/categories") {
-                if (!isStaff) {
-                    LaunchedEffect(Unit) {
-                        navController.navigate(Screen.Home.route) { popUpTo(0) }
-                    }
-                    return@composable
-                }
-
-                AdminScaffold(
-                    currentRoute = "admin/categories",
-                    user         = currentUser,
-                    title        = "Categorías",
-                    onNavClick   = { route ->
-                        navController.navigate(route) { launchSingleTop = true }
-                    },
-                    onStoreClick = { navController.navigate(Screen.Home.route) },
-                    onLogout     = {
-                        authViewModel.logout()
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                ) { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        CategoriesAdminScreen()
-                    }
-                }
+            adminRoute(
+                route = "admin/categories",
+                title = "Categorías",
+                isStaff = isStaff,
+                currentUser = currentUser,
+                authViewModel = authViewModel,
+                navController = navController,
+            ) {
+                CategoriesAdminScreen()
             }
 
-            // ── ADMIN PRODUCTS ─────────────────────
-            composable("admin/products") {
-                if (!isStaff) {
-                    LaunchedEffect(Unit) {
-                        navController.navigate(Screen.Home.route) { popUpTo(0) }
-                    }
-                    return@composable
-                }
-
-                AdminScaffold(
-                    currentRoute = "admin/products",
-                    user         = currentUser,
-                    title        = "Productos",
-                    onNavClick   = { route ->
-                        navController.navigate(route) { launchSingleTop = true }
-                    },
-                    onStoreClick = { navController.navigate(Screen.Home.route) },
-                    onLogout     = {
-                        authViewModel.logout()
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                ) { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        ProductsAdminScreen()
-                    }
-                }
+            adminRoute(
+                route = "admin/products",
+                title = "Productos",
+                isStaff = isStaff,
+                currentUser = currentUser,
+                authViewModel = authViewModel,
+                navController = navController,
+            ) {
+                ProductsAdminScreen()
             }
 
-            // ── ADMIN ORDERS ───────────────────────
             composable("admin/orders") {
-                if (!isStaff) {
-                    LaunchedEffect(Unit) {
-                        navController.navigate(Screen.Home.route) { popUpTo(0) }
-                    }
-                    return@composable
-                }
-
+                if (!isStaff) { LaunchedEffect(Unit) { navController.navigate(Screen.Home.route) { popUpTo(0) } }; return@composable }
                 val ordersAdminVm: OrdersAdminViewModel = hiltViewModel()
-
                 AdminScaffold(
-                    currentRoute = "admin/orders",
-                    user         = currentUser,
-                    title        = "Pedidos",
-                    onNavClick   = { route ->
-                        navController.navigate(route) { launchSingleTop = true }
-                    },
+                    currentRoute = "admin/orders", user = currentUser, title = "Pedidos",
+                    onNavClick = { navController.navigate(it) { launchSingleTop = true } },
                     onStoreClick = { navController.navigate(Screen.Home.route) },
-                    onLogout     = {
-                        authViewModel.logout()
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
+                    onLogout = { authViewModel.logout(); navController.navigate(Screen.Login.route) { popUpTo(0) { inclusive = true } } },
                 ) { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        OrdersAdminScreen(
-                            onOrderDetail = { id ->
-                                navController.navigate("admin/orders/$id")
-                            },
-                            viewModel = ordersAdminVm,
-                        )
+                    Box(Modifier.padding(padding)) {
+                        OrdersAdminScreen(onOrderDetail = { navController.navigate("admin/orders/$it") }, viewModel = ordersAdminVm)
                     }
                 }
             }
 
-            // ── ADMIN ORDER DETAIL ─────────────────
             composable(
-                route     = "admin/orders/{id}",
+                route = "admin/orders/{id}",
                 arguments = listOf(navArgument("id") { type = NavType.IntType }),
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getInt("id") ?: return@composable
-
-                if (!isStaff) {
-                    LaunchedEffect(Unit) {
-                        navController.navigate(Screen.Home.route) { popUpTo(0) }
-                    }
-                    return@composable
-                }
-
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("admin/orders")
-                }
-
-                val ordersAdminVm: OrdersAdminViewModel = hiltViewModel(parentEntry)
-
+                if (!isStaff) { LaunchedEffect(Unit) { navController.navigate(Screen.Home.route) { popUpTo(0) } }; return@composable }
+                val ordersAdminVm: OrdersAdminViewModel = hiltViewModel(remember(backStackEntry) { navController.getBackStackEntry("admin/orders") })
                 AdminScaffold(
-                    currentRoute = "admin/orders",
-                    user         = currentUser,
-                    title        = "Detalle pedido #$id",
-                    onNavClick   = { route ->
-                        navController.navigate(route) { launchSingleTop = true }
-                    },
+                    currentRoute = "admin/orders", user = currentUser, title = "Detalle pedido #$id",
+                    onNavClick = { navController.navigate(it) { launchSingleTop = true } },
                     onStoreClick = { navController.navigate(Screen.Home.route) },
-                    onLogout     = {
-                        authViewModel.logout()
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
+                    onLogout = { authViewModel.logout(); navController.navigate(Screen.Login.route) { popUpTo(0) { inclusive = true } } },
                 ) { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        OrderAdminDetailScreen(
-                            orderId = id,
-                            onBack  = { navController.popBackStack() },
-                            onStatusChange = { ordId, newStatus ->
-                                ordersAdminVm.changeStatus(ordId, newStatus)
-                            },
-                        )
+                    Box(Modifier.padding(padding)) {
+                        OrderAdminDetailScreen(orderId = id, onBack = { navController.popBackStack() }, onStatusChange = { ordId, s -> ordersAdminVm.changeStatus(ordId, s) })
                     }
                 }
             }
 
-            // ── ADMIN USERS (CORREGIDO) ────────────
-            composable("admin/users") {
-                if (!isStaff) {
-                    LaunchedEffect(Unit) {
-                        navController.navigate(Screen.Home.route) { popUpTo(0) }
-                    }
-                    return@composable
-                }
+            adminRoute(
+                route = "admin/users",
+                title = "Usuarios",
+                isStaff = isStaff,
+                currentUser = currentUser,
+                authViewModel = authViewModel,
+                navController = navController,
+            ) {
+                UsersAdminScreen()
+            }
 
-                AdminScaffold(
-                    currentRoute = "admin/users",
-                    user         = currentUser,
-                    title        = "Usuarios",
-                    onNavClick   = { route ->
-                        navController.navigate(route) { launchSingleTop = true }
-                    },
-                    onStoreClick = { navController.navigate(Screen.Home.route) },
-                    onLogout     = {
-                        authViewModel.logout()
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                ) { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        UsersAdminScreen()
-                    }
-                }
+            // ── NOTIFICACIONES DE STAFF ────────────
+            composable(Screen.SendNotification.route) {
+                if (!isStaff) { LaunchedEffect(Unit) { navController.popBackStack() }; return@composable }
+                SendNotificationScreen(onBack = { navController.popBackStack() })
             }
         }
     }
