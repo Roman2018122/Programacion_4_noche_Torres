@@ -13,6 +13,7 @@ data class RegisterRequest(
     val email:     String,
     val password:  String,
     @SerializedName("password2") val password2: String,
+    @SerializedName("is_staff")  val isStaff:   Boolean = true,
 )
 
 data class TokenRefreshRequest(
@@ -36,3 +37,22 @@ data class TokenRefreshResponseDto(
     val access:  String,
     val refresh: String?,   // con ROTATE_REFRESH_TOKENS=True también devuelve nuevo refresh
 )
+
+/** Cuerpo del POST /api/auth/password-reset/ */
+data class PasswordResetRequestDto(
+    @SerializedName("email") val email: String,
+)
+
+/** Cuerpo del POST /api/auth/password-reset/confirm/ */
+data class PasswordResetConfirmDto(
+    @SerializedName("uid")           val uid:          String,
+    @SerializedName("token")         val token:        String,
+    @SerializedName("new_password")  val newPassword:  String,
+    @SerializedName("new_password2") val newPassword2: String,
+)
+
+/** Respuesta genérica { "detail": "..." } */
+data class MessageDto(
+    @SerializedName("detail") val detail: String,
+)
+/**/
